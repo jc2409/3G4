@@ -1,16 +1,18 @@
 # 3G4 Medical Imaging & 3D Computer Graphics — Ultimate Study Notes
-*Cambridge Engineering Tripos Part IIA | Compiled from 2010–2024 past papers and cribs*
+*Cambridge Engineering Tripos Part IIA | Compiled from 2010–2025 past papers and cribs*
 
 ---
 
 ## HOW TO USE THIS DOCUMENT
 
-This document covers every topic that has ever appeared in 3G4 exams from 2010 to 2024, with model answers drawn directly from the official cribs. The 2026 prediction section at the end tells you exactly where to focus.
+This document covers every topic that has ever appeared in 3G4 exams from 2010 to 2025, with model answers drawn directly from the official cribs. The 2026 prediction section at the end tells you exactly where to focus.
 
-**Exam format:** 4 questions, answer all. Three topic pillars:
+**Exam format:** 4 questions, answer **at most 3**. Three topic pillars:
 - **Medical Imaging** (X-ray CT, MRI, Ultrasound, Nuclear Medicine)
-- **Curves, Surfaces & Interpolation** (Splines, Marching Cubes, Interpolation methods)
-- **3D Graphical Rendering** (Phong model, Shading, Z-buffer, Ray tracing)
+- **Curves, Surfaces & Interpolation** (Splines, Marching Cubes/Squares, Interpolation methods)
+- **3D Graphical Rendering** (Phong model, Shading, Z-buffer, Texture mapping, Ray tracing)
+
+**2025 paper (added):** Q1=Radon+Direct Fourier Reconstruction | Q2=Marching Squares+B-spline+Interpolation | Q3=Laser Scanning | Q4=Texture mapping+Phong frame rate
 
 ---
 
@@ -71,8 +73,8 @@ Given 4 hexagonal rods with unknown μ, projections Q at 3 angles, initial μ = 
 
 ---
 
-## 1B. Radon Transform & Sinograms
-*Appeared: 2010, 2013, 2014, 2016, 2018*
+## 1B. Radon Transform, Sinograms & Direct Fourier Reconstruction
+*Appeared: 2010, 2013, 2014, 2016, 2018, 2025*
 
 ### Definition
 The 2D Radon transform maps f(x,y) to line integrals at angle φ and offset s:
@@ -141,6 +143,20 @@ R[f](s,φ) = 0               for |s| > 4
 - Source at (2,2): s = 2cosφ + 2sinφ = 2√2 sin(φ + π/4)
 - Source at (0,1): s = 0·cosφ + 1·sinφ = sinφ
 Two sinusoidal curves in the (s, φ) plane.
+
+### Direct Fourier Reconstruction (NEW — 2025 Q1)
+Based on the **Fourier Slice Theorem:** The 1D Fourier transform of a projection at angle φ equals a radial slice through the 2D Fourier transform of f(x,y) at angle φ.
+
+**Algorithm steps:**
+1. Collect sinogram p(s,φ) for all angles φ
+2. Take 1D DFT of each projection row → P(ω,φ) — a radial "spoke" in 2D Fourier space
+3. Place each spoke onto the 2D polar frequency grid
+4. Repeat for all angles φ → Fourier domain known on polar grid
+5. **Missing final steps:** interpolate from polar grid onto Cartesian grid → apply 2D inverse FFT → recover μ(x,y)
+
+**Finite beam width (2025 Q1b):** Beam width t means measured projection = convolution with rect(t). Fourier transform → sinc envelope, attenuating high frequencies. To avoid aliasing, detector spacing **Δs ≤ t/2** (Nyquist criterion).
+
+**Number of projections (2025 Q1d):** Outer-ring azimuthal tip spacing Δ₂ ≈ π·(m/2)/N_proj (circumference πm/2 divided among N_proj spokes). For Δ₂ = Δ₁ (radial spacing = 1): **N_proj ≈ πm/2**, where m = number of detectors.
 
 ---
 
@@ -1158,27 +1174,28 @@ Approximately halves the number of triangles to rasterise.
 
 ---
 
-## Topic Frequency Table (2010–2024)
+## Topic Frequency Table (2010–2025)
 
-| Topic | Years | Frequency | Priority |
-|-------|-------|-----------|----------|
-| Phong model + Gouraud/Phong shading | 2010,2014,2015,2017,2018,2021,2023 | 7/11 | **MUST KNOW** |
-| Splines (Bezier/B-spline/Catmull-Rom) | 2010,2013,2014,2016,2017,2021,2023,2024 | 8/11 | **MUST KNOW** |
-| Z-buffer depth/precision | 2015,2016,2019,2024 | 4/11 | **HIGH** |
-| Radon Transform/Sinogram | 2010,2013,2014,2016,2018 | 5/11 | **HIGH** |
-| MRI | 2010,2015,2019,2023 | 4/11 | **HIGH** |
-| Ultrasound | 2015,2016,2018,2019 | 4/11 | **HIGH** |
-| Nuclear Medicine (PET/SPECT) | 2017,2019,2024 | 3/11 | MEDIUM-HIGH |
-| Interpolation (NN/bilinear/Delaunay/RBF) | 2018,2021,2024 | 3/11 | MEDIUM-HIGH |
-| Marching Cubes | 2010,2017,2019 | 3/11 | MEDIUM |
-| Laser Range Scanning | 2010,2014,2016 | 3/11 | LOW (fading) |
-| Triangle mesh/vertex normals | 2014,2017,2023 | 3/11 | MEDIUM |
-| AART/CT reconstruction | 2010,2021 | 2/11 | MEDIUM |
-| View projection matrices | 2016,2019 | 2/11 | MEDIUM |
-| Shadow z-buffer | 2023 | 1/11 | MEDIUM |
-| Texture mapping | 2018 | 1/11 | LOW |
-| Ray Tracing | 2016 | 1/11 | LOW |
-| Distance Transforms | 2015 | 1/11 | LOW |
+| Topic | Years | Count | Priority |
+|-------|-------|-------|----------|
+| Phong model + Gouraud/Phong shading | 2010,2014,2015,2017,2018,2021,2023,2025 | 8/12 | **MUST KNOW** |
+| Splines (Bezier/B-spline/Catmull-Rom) | 2010,2013,2014,2016,2017,2021,2023,2024,2025 | 9/12 | **MUST KNOW** |
+| Radon Transform/Sinogram | 2010,2013,2014,2016,2018,2025 | 6/12 | **HIGH** |
+| Z-buffer depth/precision | 2015,2016,2019,2024 | 4/12 | **HIGH** |
+| MRI | 2010,2015,2019,2023 | 4/12 | **HIGH** |
+| Ultrasound | 2015,2016,2018,2019 | 4/12 | **HIGH** |
+| Interpolation (NN/bilinear/Delaunay/RBF/B-spline) | 2018,2021,2024,2025 | 4/12 | **HIGH** |
+| Laser Range Scanning | 2010,2014,2016,2025 | 4/12 | **HIGH** (returned!) |
+| Marching Cubes/Squares | 2010,2017,2019,2025 | 4/12 | **HIGH** |
+| Nuclear Medicine (PET/SPECT) | 2017,2019,2024 | 3/12 | MEDIUM-HIGH |
+| Texture mapping | 2018,2025 | 2/12 | MEDIUM (returned!) |
+| Triangle mesh/vertex normals | 2014,2017,2023 | 3/12 | MEDIUM |
+| AART/CT reconstruction | 2010,2021 | 2/12 | MEDIUM |
+| Direct Fourier Reconstruction | 2025 | 1/12 | MEDIUM (new) |
+| View projection matrices | 2016,2019 | 2/12 | MEDIUM |
+| Shadow z-buffer | 2023 | 1/12 | MEDIUM |
+| Ray Tracing | 2016 | 1/12 | LOW |
+| Distance Transforms | 2015 | 1/12 | LOW |
 
 ---
 
@@ -1198,6 +1215,7 @@ Approximately halves the number of triangles to rasterise.
 | **2021** | AART+Iterative CT | Splines (CR+BS, closed) | Radial Basis Functions | Phong+Blinn+Specular |
 | **2023** | MRI+Slice selection+k-space | Triangle meshes+normals | B-spline+repeated points | Phong+Shadow z-buffer |
 | **2024** | Nuclear Med/PET/SPECT | Interpolation (NN,bilinear,Delaunay) | Splines+Subdivision | Z-buffer float vs int |
+| **2025** | Radon+Direct Fourier Recon | Marching Squares+B-spline+Interpolation | Laser Scanning | Texture mapping+Phong frame rate |
 
 ---
 
@@ -1226,35 +1244,41 @@ Approximately halves the number of triangles to rasterise.
 
 ---
 
-## 2026 Exam Predictions
+## 2026 Exam Predictions (Updated after seeing 2025 paper)
 
-### Almost Certain (bet your grade on these)
+**Key lesson from 2025:** "Dead" topics (laser scanning, texture mapping) returned after 9 years. No MRI/Ultrasound/Nuclear Medicine appeared. Treat everything as cyclically recurring.
+
+### Almost Certain
 | Topic | Why | Key subtopics to nail |
 |-------|-----|----------------------|
-| **Phong + Gouraud/Phong shading** | Every single year | Full formula, all terms, Blinn's H, vertex normals, hardware pixel shader, unnormalised normals |
-| **Splines** (Bezier/B-spline/CR) | 8/11 years | All 3 basis matrices, continuity at joins, convex hull, subdivision matrix L, surface formula, repeated points |
+| **Phong + Gouraud/Phong shading** | Every year 2010–2025 without exception | Full formula, all terms, Blinn's H, vertex normals, pixel shader, unnormalised normals |
+| **Splines** (Bezier/B-spline/CR) | 9/12 years; 2025 had B-spline smoothing | All 3 basis matrices, continuity, convex hull, subdivision L, surface formula, repeated points |
 
-### Very Likely
+### Very Likely (overdue after 2025 sweep)
 | Topic | Why | Key subtopics |
 |-------|-----|---------------|
-| **Ultrasound** | Absent since 2019, overdue | Beamforming delays, TGC, attenuation, sound speed errors, dynamic focus |
-| **Radon Transform** | Absent since 2018, overdue | Definition, strip/disk/point formulas, sinogram, two strips same wv |
-| **Z-buffer + floating point** | 2024 was float vs int, likely follow-up | Depth formula, nonlinearity reason, precision calculation k bits |
+| **MRI** | Absent 2024 AND 2025; last in 2023; overdue | T₁/T₂/T₂*, spin-echo, k-space, slice selection, phase+frequency encoding |
+| **Ultrasound** | Absent since 2019 (6 years) | Beamforming delays, TGC, attenuation, sound speed errors, dynamic focus |
+| **Z-buffer** | Absent 2025; 2024 was float vs int | Depth formula, nonlinearity reason, precision k bits calculation |
+| **Nuclear Medicine/PET** | Absent 2025; appeared 2024 | PET vs SPECT, coincidence window τ, attenuation correction, SNR ∝ √(dose·time) |
 
 ### Likely
 | Topic | Why | Key subtopics |
 |-------|-----|---------------|
-| **Nuclear Medicine / PET** | Appeared 2024, strong trend | PET vs SPECT, coincidence window, attenuation correction, SNR |
-| **MRI** | 2023 introduced k-space, topic expanding | Slice selection, phase/frequency encoding, k-space, T₁/T₂ weighting |
-| **Interpolation** | 2021 and 2024 had it | Bilinear, Delaunay, RBF with multiquadric, role of α |
+| **Interpolation** | 4 years in last 5 (2018,2021,2024,2025) | Bilinear, Delaunay circumcircle, RBF/multiquadric, α parameter |
+| **Marching Cubes/Squares** | Returned 2025 after gap | Algorithm, ambiguous cases, normals, accuracy vs resolution |
+| **Radon Transform** | Returned big in 2025; might have different angle next time | Definitions, strip/disk/point source, sinogram shape, DFT connection |
 
-### Possible (know the basics)
+### Possible (study enough to attempt if needed)
 | Topic | Why | Minimum to know |
 |-------|-----|-----------------|
-| **AART/CT reconstruction** | 2021 was last time; 4-5 year cycle | Algorithm, relaxation factor, optimal ordering, polychromatic problem |
-| **Marching Cubes** | Not since 2019 | Algorithm, 256 cases, topological problems, normals |
-| **Triangle meshes** | 2023 was recent | Storage schemes, vertex normal formula, polygon area |
-| **Shadow z-buffer** | New in 2023, could continue | Algorithm, Peter Panning, shadow acne, slope-scaled bias |
+| **Laser Scanning** | Just appeared 2025 — less likely to repeat immediately | Triangulation geometry, distance formula, error sources, laser thickness |
+| **Texture mapping** | Just appeared 2025 — less likely to repeat immediately | Perspective-correct interpolation formula, magnification/minification artefacts, mipmapping |
+| **Triangle meshes/vertex normals** | 2023, might return | Storage schemes, polygon area formula, vertex normal = polygon area |
+| **Shadow z-buffer** | 2023, possible return | Peter Panning, shadow acne, slope-scaled bias |
+| **AART/CT reconstruction** | 2021 last time | Algorithm, relaxation factor, beam hardening |
+| **Direct Fourier Reconstruction** | NEW in 2025 | Fourier slice theorem, polar-to-Cartesian interpolation, Δs ≤ t/2, N_proj ≈ πm/2 |
+| **View projection matrices** | 2019 last time | Matrix elements → FOV/n/f, off-screen picking |
 
 ---
 
@@ -1267,6 +1291,7 @@ AART update:           μᵢ_new = μᵢ_old + λ(Q_meas − Q_est)/N_pixels
 Radon of strip(w,v):   R = wv/sinθ
 Radon of disk(r):      R = 2√(r²−s²) for |s|≤r
 Point source sinogram: s = a cosφ + b sinφ
+Direct Fourier:        1D DFT of projection = radial slice of 2D FT; Δs ≤ t/2; N_proj ≈ πm/2
 Larmor frequency:      f = γB₀  (γ = 42.58 MHz/T for protons)
 T₁ recovery:           Mz = M₀(1 − e^(−t/T₁))
 T₂ decay:              Mxy = M₀ e^(−t/T₂)
